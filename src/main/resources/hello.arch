@@ -1,0 +1,22 @@
+module main
+
+import foo as bar
+
+let y = 10 ;
+let z = 20 ;
+
+private let timesTwo ([a] int : int [a]) =
+  let y = 10 ;
+  let z = 20 ;
+  2 *
+;
+
+let helloWorld (() -> ()) =
+  let a = "Hello"
+      b = "World" in
+  a b ++
+;
+
+let main =
+  "Hello, World!" println
+;

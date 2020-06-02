@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.owainlewis'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.9
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.3'
+}
+
+apply plugin : "java"
+ext {
+    javaMainClass = "com.owainlewis.arch.Main"
+}
+
+// Tasks
+run {
+    standardInput = System.in
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+    // Always run tests, even when nothing changed.
+    dependsOn 'cleanTest'
+    // Show test results.
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
