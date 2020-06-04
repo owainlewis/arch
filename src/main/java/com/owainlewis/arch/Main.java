@@ -1,26 +1,23 @@
 package com.owainlewis.arch;
 
 import com.owainlewis.arch.lang.Scanner;
-import com.owainlewis.arch.lang.SourceReader;
+import com.owainlewis.arch.lang.Source;
+import com.owainlewis.arch.lang.Token;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.*;
 
 public class Main {
 
-    public static void main(String [] args) throws IOException {
+  public static void main(String[] args) throws IOException {
+    PushbackReader reader = new PushbackReader(new StringReader("[ 1 ] ;"));
 
-        String input = "123";
-        Reader inputString = new StringReader(input);
-        BufferedReader reader = new BufferedReader(inputString);
-        SourceReader src = new SourceReader(reader);
+    Source s = new Source(reader);
+    Scanner scanner = new Scanner(s);
 
-        Scanner scanner = new Scanner(src);
-
-        System.out.println(scanner.nextToken());
+    for (int i = 0; i<10; i++) {
+          Token t = scanner.nextToken();
+          if (t != null)
+              System.out.printf("Line: %d Col: %d Char: %s\n", s.getLineNumber(), s.getColumnNumber(), t);
+      }
     }
 }

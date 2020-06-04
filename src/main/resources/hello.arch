@@ -1,22 +1,22 @@
 module main
 
-import foo as bar
+import foo as f
 
+>> Something here about something
+>> This is another line
+
+>> Single bindings
 let y = 10 ;
 let z = 20 ;
 
-private let timesTwo ([a] int : int [a]) =
+>> Functions
+private let timesTwo =
   let y = 10 ;
   let z = 20 ;
   2 *
-;
+end
 
-let helloWorld (() -> ()) =
-  let a = "Hello"
-      b = "World" in
-  a b ++
-;
-
+>> Entry point to the program
 let main =
   "Hello, World!" println
-;
+end

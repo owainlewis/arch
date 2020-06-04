@@ -5,7 +5,6 @@ public enum TokenType {
     INTEGER,
     FLOAT,
     STRING,
-    CHAR,
     ATOM,
 
     // Reserved words
@@ -20,8 +19,6 @@ public enum TokenType {
     SEMICOLON,
 
     // Other tokens
-    LEFT_PAREN,
-    RIGHT_PAREN,
     LEFT_BRACKET,
     RIGHT_BRACKET,
     EOF

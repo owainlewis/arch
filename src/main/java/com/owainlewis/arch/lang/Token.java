@@ -1,28 +1,23 @@
 package com.owainlewis.arch.lang;
 
-import java.util.Optional;
+public final class Token {
 
-public class Token {
+    private final TokenType type;
 
-    private TokenType type;
+    private final String lexeme;
 
-    private String lexeme;
+    private final Object literal;
 
-    private Object literal;
+    private final int lineNumber;
 
-    private int lineNumber;
+    private final int columnNumber;
 
-    private int columnNumber;
-
-    private SourceReader source;
-
-    public Token(SourceReader source) {
-        this.source = source;
-    }
-
-    public void extract() {
-        Optional<Character> c = source.nextChar();
-
+    public Token(TokenType type, String lexeme, Object literal, int lineNumber, int columnNumber) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.literal = literal;
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
     }
 
     public TokenType getType() {
