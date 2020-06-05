@@ -1,11 +1,18 @@
-package com.owainlewis.arch.lang;
+package com.owainlewis.arch.lang.frontend;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public final class Scanner {
+
+  static Pattern intPat =
+      Pattern.compile(
+          "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?");
+  static Pattern floatPat = Pattern.compile("([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?");
 
   private static class ScannerException extends RuntimeException {
     public final int line;
@@ -15,6 +22,11 @@ public final class Scanner {
       super(cause);
       this.line = line;
       this.column = column;
+    }
+
+    @Override
+    public String getMessage() {
+      return String.format("Exception: %s. Line: %d, column: %d", super.getMessage(), line, column);
     }
   }
 
@@ -29,34 +41,56 @@ public final class Scanner {
     this.source = source;
   }
 
+  public List<Token> scan() throws IOException {
+    List<Token> tokens = new ArrayList<>();
+    while(true) {
+      Token next = nextToken();
+      tokens.add(next);
+      if (TokenType.EOF.equals(Objects.requireNonNull(next).getType())) break;
+    }
+
+    return tokens;
+  }
+
   // Atom
   // Integer
   // Float
   public Token nextToken() throws IOException {
     // Skip whitespace
     char c = source.nextChar();
-    while(Character.isWhitespace(c)) {
+    while (Character.isWhitespace(c)) {
       c = source.nextChar();
     }
 
-    switch (c) {
-      case '[':
-        return makeUnaryCharToken(TokenType.LEFT_BRACKET, c);
-      case ']':
-        return makeUnaryCharToken(TokenType.RIGHT_BRACKET, c);
-      case '=':
-        return makeUnaryCharToken(TokenType.EQ, c);
-      case ';':
-        return makeUnaryCharToken(TokenType.SEMICOLON, c);
-      case '>':
-            readComment();
-            break;
-      default:
-        {
-          if (Character.isDigit(c)) {
+    if (Character.getNumericValue(c) == -1) return makeToken(TokenType.EOF, "", null);
+
+    try {
+      switch (c) {
+        case '[':
+          return makeUnaryCharToken(TokenType.LEFT_BRACKET, c);
+        case ']':
+          return makeUnaryCharToken(TokenType.RIGHT_BRACKET, c);
+        case '=':
+          return makeUnaryCharToken(TokenType.EQ, c);
+        case ';':
+          return makeUnaryCharToken(TokenType.SEMICOLON, c);
+        case '>':
+          readComment();
+          break;
+        case '+':
+        case '-':
+          if (source.nextCharSatisfies(Character::isDigit)) {
             return readNumber(c);
           }
-        }
+        default:
+          {
+            if (Character.isDigit(c)) {
+              return readNumber(c);
+            }
+          }
+      }
+    } catch (RuntimeException e) {
+      throw new ScannerException(source.getLineNumber(), source.getColumnNumber(), e);
     }
 
     return null;
@@ -65,8 +99,7 @@ public final class Scanner {
   private Token readNumber(char initChar) throws IOException {
     String number = consumeNumber(initChar);
     Integer i = Integer.parseInt(number);
-
-    return makeToken(TokenType.INTEGER, number, i);
+    return makeToken(TokenType.INTEGER, number, 1);
   }
 
   /**
@@ -126,7 +159,11 @@ public final class Scanner {
     return new Token(type, lexeme, literal, source.getLineNumber(), source.getColumnNumber());
   }
 
-  public Exception error(Throwable cause) {
-    return new ScannerException(source.getLineNumber(), source.getColumnNumber(), cause);
+  public static class NumberReader implements Reader {
+
+    @Override
+    public Token invoke(Source source) {
+      return null;
+    }
   }
 }

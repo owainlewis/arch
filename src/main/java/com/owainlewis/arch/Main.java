@@ -1,15 +1,15 @@
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.Scanner;
-import com.owainlewis.arch.lang.Source;
-import com.owainlewis.arch.lang.Token;
+import com.owainlewis.arch.lang.frontend.Scanner;
+import com.owainlewis.arch.lang.frontend.Source;
+import com.owainlewis.arch.lang.frontend.Token;
 
 import java.io.*;
 
 public class Main {
 
   public static void main(String[] args) throws IOException {
-    PushbackReader reader = new PushbackReader(new StringReader("[ 1 ] ;"));
+    PushbackReader reader = new PushbackReader(new StringReader("-10"));
 
     Source s = new Source(reader);
     Scanner scanner = new Scanner(s);

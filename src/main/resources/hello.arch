@@ -14,9 +14,9 @@ private let timesTwo =
   let y = 10 ;
   let z = 20 ;
   2 *
-end
+;
 
 >> Entry point to the program
 let main =
   "Hello, World!" println
-end
+;

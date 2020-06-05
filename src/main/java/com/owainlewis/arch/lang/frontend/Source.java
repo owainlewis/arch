@@ -1,4 +1,4 @@
-package com.owainlewis.arch.lang;
+package com.owainlewis.arch.lang.frontend;
 
 import java.io.IOException;
 import java.io.PushbackReader;

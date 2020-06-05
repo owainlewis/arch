@@ -1,7 +1,8 @@
-package com.owainlewis.arch.lang;
+package com.owainlewis.arch.lang.frontend;
+
+import lombok.NonNull;
 
 public final class Token {
-
     private final TokenType type;
 
     private final String lexeme;
@@ -12,7 +13,7 @@ public final class Token {
 
     private final int columnNumber;
 
-    public Token(TokenType type, String lexeme, Object literal, int lineNumber, int columnNumber) {
+    public Token(@NonNull TokenType type, @NonNull String lexeme, Object literal, @NonNull int lineNumber, @NonNull int columnNumber) {
         this.type = type;
         this.lexeme = lexeme;
         this.literal = literal;
