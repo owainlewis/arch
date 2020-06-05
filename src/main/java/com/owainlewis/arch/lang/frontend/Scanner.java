@@ -3,6 +3,7 @@ package com.owainlewis.arch.lang.frontend;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -13,6 +14,20 @@ public final class Scanner {
       Pattern.compile(
           "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?");
   static Pattern floatPat = Pattern.compile("([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?");
+
+  private static final Map<String, TokenType> reservedWords;
+
+  static {
+    reservedWords =
+        Map.of(
+            "module", TokenType.MODULE,
+            "private", TokenType.PRIVATE,
+            "public", TokenType.PUBLIC,
+            "let", TokenType.LET,
+            "import", TokenType.IMPORT,
+            "as", TokenType.AS
+                );
+  }
 
   private static class ScannerException extends RuntimeException {
     public final int line;
@@ -43,7 +58,7 @@ public final class Scanner {
 
   public List<Token> scan() throws IOException {
     List<Token> tokens = new ArrayList<>();
-    while(true) {
+    while (true) {
       Token next = nextToken();
       tokens.add(next);
       if (TokenType.EOF.equals(Objects.requireNonNull(next).getType())) break;
@@ -96,12 +111,6 @@ public final class Scanner {
     return null;
   }
 
-  private Token readNumber(char initChar) throws IOException {
-    String number = consumeNumber(initChar);
-    Integer i = Integer.parseInt(number);
-    return makeToken(TokenType.INTEGER, number, 1);
-  }
-
   /**
    * Comments begin with a > char and run until the end of a line
    *
@@ -116,6 +125,16 @@ public final class Scanner {
         throw new IllegalStateException("Unterminated comment literal while reading comment");
       }
     }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Numbers
+  //////////////////////////////////////////////////////////////////////
+
+  private Token readNumber(char initChar) throws IOException {
+    String number = consumeNumber(initChar);
+    Integer i = Integer.parseInt(number);
+    return makeToken(TokenType.INTEGER, number, i);
   }
 
   private String consumeNumber(char initDigit) throws IOException {
@@ -135,6 +154,14 @@ public final class Scanner {
     }
 
     return builder.toString();
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Utils
+  //////////////////////////////////////////////////////////////////////
+
+  protected boolean isKeyword(String word) {
+    return reservedWords.containsKey(word);
   }
 
   private String consumeWhile(Predicate<Character> predicate) throws IOException {

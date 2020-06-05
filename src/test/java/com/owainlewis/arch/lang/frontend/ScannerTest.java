@@ -1,5 +1,6 @@
 package com.owainlewis.arch.lang.frontend;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,10 +11,13 @@ import java.util.List;
 
 public class ScannerTest {
 
-  private void shouldExtractTokens(String source, TokenType... tokens) {
-    PushbackReader reader = new PushbackReader(new StringReader(source));
-    Source s = new Source(reader);
-    Scanner scanner = new Scanner(s);
+  private Scanner makeScanner(String input) {
+      PushbackReader reader = new PushbackReader(new StringReader(input));
+      return new Scanner(new Source(reader));
+  }
+
+  private void shouldExtractTokens(String source, List<Token> expected) {
+    Scanner scanner = makeScanner(source);
 
     List<Token> scanned = new ArrayList<Token>();
     try {
@@ -22,13 +26,26 @@ public class ScannerTest {
       e.printStackTrace();
     }
 
-    for (Token t : scanned) {
-      System.out.println(t);
-    }
+      Assertions.assertEquals(expected, scanned);
+  }
+
+  @Test()
+  void testIsReservedWord() {
+      Scanner s = makeScanner("");
+      Assertions.assertTrue(s.isKeyword("private"));
+      Assertions.assertTrue(s.isKeyword("public"));
+      Assertions.assertTrue(s.isKeyword("module"));
+      Assertions.assertTrue(s.isKeyword("import"));
+      Assertions.assertTrue(s.isKeyword("as"));
+      Assertions.assertTrue(s.isKeyword("let"));
   }
 
   @Test()
   void testScanNumber() {
-    shouldExtractTokens("0 5 10");
+    List<Token> expected = new ArrayList<>();
+    expected.add(new Token(TokenType.INTEGER, "0", 0, 1, 0));
+    expected.add(new Token(TokenType.EOF, "", null, 1, 0));
+
+    shouldExtractTokens("0", expected);
   }
 }

@@ -2,6 +2,8 @@ package com.owainlewis.arch.lang.frontend;
 
 import lombok.NonNull;
 
+import java.util.Objects;
+
 public final class Token {
     private final TokenType type;
 
@@ -31,6 +33,23 @@ public final class Token {
 
     public Object getLiteral() {
         return literal;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return lineNumber == token.lineNumber &&
+                columnNumber == token.columnNumber &&
+                type == token.type &&
+                Objects.equals(lexeme, token.lexeme) &&
+                Objects.equals(literal, token.literal);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, lexeme, literal, lineNumber, columnNumber);
     }
 
     public int getLineNumber() {
