@@ -30,7 +30,7 @@ public class ScannerTest {
   }
 
   @Test()
-  void testIsReservedWord() {
+  void testIsKeyword() {
       Scanner s = makeScanner("");
       Assertions.assertTrue(s.isKeyword("private"));
       Assertions.assertTrue(s.isKeyword("public"));
@@ -38,6 +38,22 @@ public class ScannerTest {
       Assertions.assertTrue(s.isKeyword("import"));
       Assertions.assertTrue(s.isKeyword("as"));
       Assertions.assertTrue(s.isKeyword("let"));
+  }
+
+  void testScanInteger() {
+
+  }
+
+  void testScanFloat() {
+
+  }
+
+  void testScanIdentifier() {
+      List<Token> expected = new ArrayList<>();
+      expected.add(new Token(TokenType.IDENTIFIER, "foo", "foo", 1, 0));
+      expected.add(new Token(TokenType.EOF, "", null, 1, 0));
+
+      shouldExtractTokens("foo", expected);
   }
 
   @Test()

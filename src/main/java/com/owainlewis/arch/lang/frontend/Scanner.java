@@ -13,6 +13,7 @@ public final class Scanner {
   static Pattern intPat =
       Pattern.compile(
           "([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?");
+
   static Pattern floatPat = Pattern.compile("([-+]?[0-9]+(\\.[0-9]*)?([eE][-+]?[0-9]+)?)(M)?");
 
   private static final Map<String, TokenType> reservedWords;
@@ -25,8 +26,7 @@ public final class Scanner {
             "public", TokenType.PUBLIC,
             "let", TokenType.LET,
             "import", TokenType.IMPORT,
-            "as", TokenType.AS
-                );
+            "as", TokenType.AS);
   }
 
   private static class ScannerException extends RuntimeException {
@@ -67,7 +67,7 @@ public final class Scanner {
     return tokens;
   }
 
-  // Atom
+  // Identifier
   // Integer
   // Float
   public Token nextToken() throws IOException {
@@ -102,6 +102,10 @@ public final class Scanner {
             if (Character.isDigit(c)) {
               return readNumber(c);
             }
+
+            if (isIdentifier(c)) {
+              return readIdentifier(c);
+            }
           }
       }
     } catch (RuntimeException e) {
@@ -125,6 +129,27 @@ public final class Scanner {
         throw new IllegalStateException("Unterminated comment literal while reading comment");
       }
     }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // Identifiers
+  //////////////////////////////////////////////////////////////////////
+
+  private Token readIdentifier(char initChar) throws IOException {
+    StringBuilder builder = new StringBuilder();
+    builder.append(initChar);
+
+    String rest = consumeWhile(this::isIdentifier);
+
+    builder.append(rest);
+
+    String lexeme = builder.toString();
+
+    return makeToken(TokenType.IDENTIFIER, lexeme, lexeme);
+  }
+
+  private boolean isIdentifier(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '-' || c == '=';
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -184,13 +209,5 @@ public final class Scanner {
 
   private Token makeToken(TokenType type, String lexeme, Object literal) {
     return new Token(type, lexeme, literal, source.getLineNumber(), source.getColumnNumber());
-  }
-
-  public static class NumberReader implements Reader {
-
-    @Override
-    public Token invoke(Source source) {
-      return null;
-    }
   }
 }

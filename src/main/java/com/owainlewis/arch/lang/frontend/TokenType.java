@@ -5,7 +5,7 @@ public enum TokenType {
     INTEGER,
     FLOAT,
     STRING,
-    ATOM,
+    IDENTIFIER,
 
     // Reserved words
     PRIVATE,
@@ -18,8 +18,13 @@ public enum TokenType {
     EQ,
     SEMICOLON,
 
-    // Other tokens
+    // Lists [ ]
     LEFT_BRACKET,
     RIGHT_BRACKET,
+
+    // Sets { }
+    LEFT_CURLY,
+    RIGHT_CURLY,
+
     EOF
 }
