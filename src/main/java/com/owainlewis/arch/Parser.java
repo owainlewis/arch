@@ -1,7 +1,7 @@
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.frontend.Token;
-import com.owainlewis.arch.lang.frontend.TokenType;
+import com.owainlewis.arch.lang.scanner.Token;
+import com.owainlewis.arch.lang.scanner.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ public final class Parser {
 
   public Parser(List<Token> tokens) {
     this.tokens = tokens;
+    System.out.println(tokens);
   }
 
   public List<Statement> parse() {
@@ -23,7 +24,7 @@ public final class Parser {
       if (token.getType() == TokenType.EOF) {
         break;
       }
-      Statement stmt = expressionStatement();
+      Statement stmt = statement();
       statements.add(stmt);
     }
 
@@ -31,27 +32,43 @@ public final class Parser {
   }
 
   private Expression expression() {
-    if (match(TokenType.INTEGER, TokenType.FLOAT, TokenType.STRING, TokenType.IDENTIFIER)) {
-      return new Expression.Literal(previous().getLiteral());
+    if (match(TokenType.INTEGER)) {
+      return new Expression.Literal(ExpressionType.Integer, previous().getLiteral());
+    }
+    if (match(TokenType.FLOAT)) {
+      return new Expression.Literal(ExpressionType.Float, previous().getLiteral());
+    }
+    if (match(TokenType.STRING)) {
+      return new Expression.Literal(ExpressionType.String, previous().getLiteral());
+    }
+    if (match(TokenType.IDENTIFIER)) {
+      return new Expression.Literal(ExpressionType.Word, previous().getLiteral());
     }
 
-    if (match(TokenType.LEFT_BRACKET)) {
-      List<Expression> exprs = listExpression();
-      return new Expression.List(exprs);
+    if (match(TokenType.LEFT_BRACKET)) return new Expression.ListExpr(block());
+
+    if (match(TokenType.EOF)) {
+        System.out.println("EOF"); return null;
     }
 
-    throw new IllegalStateException(peek().toString());
+    return null;
   }
 
-  private List<Expression> listExpression() {
-    List<Expression> exprs = new ArrayList<>();
+    private List<Expression> block() {
+        List<Expression> statements = new ArrayList<>();
 
-    while (!check(TokenType.RIGHT_BRACKET)) {
-      exprs.add(expression());
+        while (!check(TokenType.RIGHT_BRACKET) && !isAtEnd()) {
+            //statements.add(Expression.Literal(ExpressionType.Int));
+        }
+
+        consume(TokenType.RIGHT_BRACKET, "Expect ']' after block.");
+
+        return statements;
     }
 
-    consume(TokenType.RIGHT_BRACKET, "Expect ']' after block.");
-    return exprs;
+  private Statement statement() {
+      Statement statement = expressionStatement();
+      return statement;
   }
 
   private Statement expressionStatement() {
@@ -78,6 +95,7 @@ public final class Parser {
 
   private boolean check(TokenType type) {
     if (isAtEnd()) return false;
+    System.out.println("PEEK >> " + peek().getType());
     return peek().getType() == type;
   }
 

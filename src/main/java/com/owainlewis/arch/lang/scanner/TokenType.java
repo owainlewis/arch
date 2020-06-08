@@ -1,4 +1,4 @@
-package com.owainlewis.arch.lang.frontend;
+package com.owainlewis.arch.lang.scanner;
 
 public enum TokenType {
     // Core types

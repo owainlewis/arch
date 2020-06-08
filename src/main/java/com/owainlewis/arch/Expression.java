@@ -1,12 +1,15 @@
 package com.owainlewis.arch;
 
-// Integer, Float, String, List, Set, Char, Identifier
+import java.util.List;
+
 public abstract class Expression {
 
     static final class Literal extends Expression {
+        private final ExpressionType type;
         private final Object value;
 
-        Literal(Object value) {
+        Literal(ExpressionType type, Object value) {
+            this.type = type;
             this.value = value;
         }
 
@@ -20,24 +23,17 @@ public abstract class Expression {
                     "value=" + value +
                     '}';
         }
+
+        public ExpressionType getType() {
+            return type;
+        }
     }
 
-    static final class List extends Expression {
-        private final Object value;
+    static final class ListExpr extends Expression {
+        private final List<Expression> expressions;
 
-        public List(Object value) {
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return "List{" +
-                    "value=" + value +
-                    '}';
+        public ListExpr(List<Expression> expressions) {
+            this.expressions = expressions;
         }
     }
 }

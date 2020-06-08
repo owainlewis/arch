@@ -1,6 +1,6 @@
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.frontend.Token;
+import com.owainlewis.arch.lang.scanner.Token;
 import lombok.NonNull;
 
 public abstract class Statement {

@@ -1,4 +1,4 @@
-package com.owainlewis.arch.lang.frontend;
+package com.owainlewis.arch.lang.scanner;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class ScannerTest {
   }
 
   private void scanFixture(String path) {
-      
+
 
 
   }

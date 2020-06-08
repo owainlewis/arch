@@ -1,8 +1,8 @@
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.frontend.Scanner;
-import com.owainlewis.arch.lang.frontend.Source;
-import com.owainlewis.arch.lang.frontend.Token;
+import com.owainlewis.arch.lang.scanner.Scanner;
+import com.owainlewis.arch.lang.scanner.Source;
+import com.owainlewis.arch.lang.scanner.Token;
 import lombok.NoArgsConstructor;
 
 import java.io.*;
@@ -39,20 +39,20 @@ public final class ReadEvalPrintLoop {
     try {
       List<Token> tokens = scanner.scan();
       for (Token t : tokens) {
-        System.out.println(t);
+        System.out.println("Token " + t);
       }
 
       Parser parser = new Parser(tokens);
       List<Statement> statements = parser.parse();
 
       for (Statement stmt : statements) {
-        // System.out.println(stmt);
+        System.out.println("Statement" + stmt);
       }
 
-      interpreter.interpret(statements);
+    //  interpreter.interpret(statements);
 
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      System.out.println("Error " + e.getMessage());
     }
   }
 }

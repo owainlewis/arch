@@ -1,4 +1,4 @@
-package com.owainlewis.arch.lang.frontend;
+package com.owainlewis.arch.lang.scanner;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public final class Scanner {
       c = source.nextChar();
     }
 
-    if (source.peekChar().isEmpty()) return makeToken(TokenType.EOF, "", null);
+    if (source.isEOF()) return makeToken(TokenType.EOF, "", null);
 
     try {
       switch (c) {
