@@ -29,6 +29,12 @@ public class ScannerTest {
       Assertions.assertEquals(expected, scanned);
   }
 
+  private void scanFixture(String path) {
+      
+
+
+  }
+
   @Test()
   void testIsKeyword() {
       Scanner s = makeScanner("");

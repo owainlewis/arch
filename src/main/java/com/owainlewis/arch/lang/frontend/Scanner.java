@@ -67,17 +67,15 @@ public final class Scanner {
     return tokens;
   }
 
-  // Identifier
-  // Integer
-  // Float
   public Token nextToken() throws IOException {
     // Skip whitespace
     char c = source.nextChar();
+
     while (Character.isWhitespace(c)) {
       c = source.nextChar();
     }
 
-    if (Character.getNumericValue(c) == -1) return makeToken(TokenType.EOF, "", null);
+    if (source.peekChar().isEmpty()) return makeToken(TokenType.EOF, "", null);
 
     try {
       switch (c) {
