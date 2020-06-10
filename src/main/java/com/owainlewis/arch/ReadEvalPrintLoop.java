@@ -67,7 +67,7 @@ public final class ReadEvalPrintLoop {
     //  interpreter.interpret(statements);
 
     } catch (Exception e) {
-      System.out.println("Error " + e.getMessage());
+      System.out.println("Caught Exception while processing: " + e.getMessage());
     }
   }
 }

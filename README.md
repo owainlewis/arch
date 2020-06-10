@@ -22,3 +22,29 @@ let bar =
 
 let main = double bar foo read
 ```
+## Type system
+
+TBD
+
+```
+>> A variable which returns an integer and pushes it onto the stack
+let x (int) = 10;
+
+>> A function that expects two integers on the stack and produces a single integer
+let y (int, int -> int) = pop inc
+```
+
+## Variables and functions
+
+You can assign a value to a name using the `let` statement.
+
+```
+let x = 10 ;
+```
+
+Given that arch is a stack based language a function is just a series of operations assigned to a name. As such, functions are defined in exactly the same
+way as variables are.
+
+```
+let double = 2 * ;
+```

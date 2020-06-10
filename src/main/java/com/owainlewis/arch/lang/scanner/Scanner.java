@@ -173,6 +173,11 @@ public final class Scanner {
 
     String lexeme = builder.toString();
 
+    if (isKeyword(lexeme)) {
+      TokenType type = reservedWords.get(lexeme);
+      return makeToken(type, lexeme, null);
+    }
+
     return makeToken(TokenType.IDENTIFIER, lexeme, lexeme);
   }
 

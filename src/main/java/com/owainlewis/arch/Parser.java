@@ -81,8 +81,27 @@ public final class Parser {
     }
 
   private Statement statement() {
-      Statement statement = expressionStatement();
+      Statement statement;
+      if (check(TokenType.LET)) {
+        statement = letStatement();
+    } else {
+      statement = expressionStatement();
+      }
       return statement;
+  }
+
+  private Statement letStatement() {
+    // let x = 10 ;
+    consume(TokenType.LET, "Let expected");
+    Token ident = consume(TokenType.IDENTIFIER, "Expect identifier");
+    consume(TokenType.EQ, "Expect '=' in let statement");
+
+    List<Expression> expressions = new ArrayList<>();
+    while (!check(TokenType.SEMICOLON)) {
+      advance();
+    }
+    advance(); // Consume the semicolon
+    return new Statement.LetStmt(ident.getLexeme(), expressions);
   }
 
   private Statement expressionStatement() {
@@ -109,6 +128,7 @@ public final class Parser {
 
   private boolean check(TokenType type) {
     if (isAtEnd()) return false;
+    System.out.println(peek().getType());
     return peek().getType() == type;
   }
 

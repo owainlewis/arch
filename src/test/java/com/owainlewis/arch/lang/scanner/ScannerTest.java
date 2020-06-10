@@ -94,4 +94,13 @@ public class ScannerTest {
 
         shouldExtractTokens("\"arch\"", expected);
     }
+
+    @Test()
+    void testScanKeyword() {
+        List<Token> expected = new ArrayList<>();
+        expected.add(new Token(TokenType.LET, "let", null, 1, 2));
+        expected.add(new Token(TokenType.EOF, "", null, 1, 2));
+
+        shouldExtractTokens("let", expected);
+    }
 }

@@ -15,9 +15,31 @@
  */
 package com.owainlewis.arch;
 
+import com.owainlewis.arch.lang.scanner.Scanner;
+import com.owainlewis.arch.lang.scanner.Source;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.PushbackReader;
+import java.io.StringReader;
+import java.util.List;
+
 public class ParserTest {
+
+    private Parser makeParser(String input) throws IOException {
+        PushbackReader reader = new PushbackReader(new StringReader(input));
+        Scanner s = new Scanner(new Source(reader));
+
+        return new Parser(s.scan());
+    }
+
+    @Test
+    void testParseLetStatement() throws IOException {
+        Parser parser = makeParser("let x = 10 ;");
+        List<Statement> statements = parser.parse();
+        System.out.println(statements);
+
+    }
 
     @Test()
     void testParseLiteral() {
