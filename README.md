@@ -26,7 +26,7 @@ let main = double bar foo read
 
 TBD
 
-```
+```ocaml
 >> A variable which returns an integer and pushes it onto the stack
 let x (int) = 10;
 
@@ -38,13 +38,13 @@ let y (int, int -> int) = pop inc
 
 You can assign a value to a name using the `let` statement.
 
-```
+```ocaml
 let x = 10 ;
 ```
 
 Given that arch is a stack based language a function is just a series of operations assigned to a name. As such, functions are defined in exactly the same
 way as variables are.
 
-```
+```ocaml
 let double = 2 * ;
 ```
