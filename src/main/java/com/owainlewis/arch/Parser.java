@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2020 Owain Lewis <owain@owainlewis.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.owainlewis.arch;
 
 import com.owainlewis.arch.lang.scanner.Token;
@@ -14,7 +29,6 @@ public final class Parser {
 
   public Parser(List<Token> tokens) {
     this.tokens = tokens;
-    System.out.println(tokens);
   }
 
   public List<Statement> parse() {
@@ -33,23 +47,23 @@ public final class Parser {
 
   private Expression expression() {
     if (match(TokenType.INTEGER)) {
-      return new Expression.Literal(ExpressionType.Integer, previous().getLiteral());
+      return new Expression.Literal(Expression.Type.Integer, previous().getLiteral());
     }
     if (match(TokenType.FLOAT)) {
-      return new Expression.Literal(ExpressionType.Float, previous().getLiteral());
+      return new Expression.Literal(Expression.Type.Float, previous().getLiteral());
     }
     if (match(TokenType.STRING)) {
-      return new Expression.Literal(ExpressionType.String, previous().getLiteral());
+      return new Expression.Literal(Expression.Type.String, previous().getLiteral());
     }
     if (match(TokenType.IDENTIFIER)) {
-      return new Expression.Literal(ExpressionType.Word, previous().getLiteral());
+      return new Expression.Literal(Expression.Type.Word, previous().getLiteral());
+    }
+    if (match(TokenType.LEFT_BRACKET)) {
+      return new Expression.ListExpr(block());
     }
 
-    if (match(TokenType.LEFT_BRACKET)) return new Expression.ListExpr(block());
-
-    if (match(TokenType.EOF)) {
-        System.out.println("EOF"); return null;
-    }
+    System.out.println("Fell through because " + previous());
+    System.out.println("Fell through because " + peek());
 
     return null;
   }
@@ -57,8 +71,8 @@ public final class Parser {
     private List<Expression> block() {
         List<Expression> statements = new ArrayList<>();
 
-        while (!check(TokenType.RIGHT_BRACKET) && !isAtEnd()) {
-            //statements.add(Expression.Literal(ExpressionType.Int));
+        while (!check(TokenType.RIGHT_BRACKET)) {
+          statements.add(expression());
         }
 
         consume(TokenType.RIGHT_BRACKET, "Expect ']' after block.");
@@ -95,7 +109,6 @@ public final class Parser {
 
   private boolean check(TokenType type) {
     if (isAtEnd()) return false;
-    System.out.println("PEEK >> " + peek().getType());
     return peek().getType() == type;
   }
 

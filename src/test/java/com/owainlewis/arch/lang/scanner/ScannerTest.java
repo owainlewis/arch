@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2020 Owain Lewis <owain@owainlewis.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.owainlewis.arch.lang.scanner;
 
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +34,7 @@ public class ScannerTest {
   private void shouldExtractTokens(String source, List<Token> expected) {
     Scanner scanner = makeScanner(source);
 
-    List<Token> scanned = new ArrayList<Token>();
+    List<Token> scanned = new ArrayList<>();
     try {
       scanned = scanner.scan();
     } catch (IOException e) {
@@ -30,8 +45,6 @@ public class ScannerTest {
   }
 
   private void scanFixture(String path) {
-
-
 
   }
 
@@ -46,28 +59,39 @@ public class ScannerTest {
       Assertions.assertTrue(s.isKeyword("let"));
   }
 
+  @Test()
   void testScanInteger() {
-
-  }
-
-  void testScanFloat() {
-
-  }
-
-  void testScanIdentifier() {
       List<Token> expected = new ArrayList<>();
-      expected.add(new Token(TokenType.IDENTIFIER, "foo", "foo", 1, 0));
-      expected.add(new Token(TokenType.EOF, "", null, 1, 0));
+      expected.add(new Token(TokenType.INTEGER, "10", (int) 10, 1, 1));
+      expected.add(new Token(TokenType.EOF, "", null, 1, 1));
 
-      shouldExtractTokens("foo", expected);
+      shouldExtractTokens("10", expected);
   }
 
   @Test()
-  void testScanNumber() {
-    List<Token> expected = new ArrayList<>();
-    expected.add(new Token(TokenType.INTEGER, "0", 0, 1, 0));
-    expected.add(new Token(TokenType.EOF, "", null, 1, 0));
+  void testScanFloat() {
+      List<Token> expected = new ArrayList<>();
+      expected.add(new Token(TokenType.FLOAT, "1.5", 1.5, 1, 2));
+      expected.add(new Token(TokenType.EOF, "", null, 1, 2));
 
-    shouldExtractTokens("0", expected);
+      shouldExtractTokens("1.5", expected);
   }
+
+  @Test()
+  void testScanIdentifier() {
+      List<Token> expected = new ArrayList<>();
+      expected.add(new Token(TokenType.IDENTIFIER, "arch", "arch", 1, 3));
+      expected.add(new Token(TokenType.EOF, "", null, 1, 3));
+
+      shouldExtractTokens("arch", expected);
+  }
+
+    @Test()
+    void testScanString() {
+        List<Token> expected = new ArrayList<>();
+        expected.add(new Token(TokenType.STRING, "arch", "arch", 1, 5));
+        expected.add(new Token(TokenType.EOF, "", null, 1, 5));
+
+        shouldExtractTokens("\"arch\"", expected);
+    }
 }

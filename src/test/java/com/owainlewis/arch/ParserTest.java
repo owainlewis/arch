@@ -13,33 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.owainlewis.arch.lang.scanner;
+package com.owainlewis.arch;
 
-public enum TokenType {
-    // Core types
-    INTEGER,
-    FLOAT,
-    STRING,
-    IDENTIFIER,
+import org.junit.jupiter.api.Test;
 
-    // Reserved words
-    PRIVATE,
-    PUBLIC,
-    LET,
-    MODULE,
-    IMPORT,
-    AS,
+public class ParserTest {
 
-    EQ,
-    SEMICOLON,
+    @Test()
+    void testParseLiteral() {
 
-    // Lists [ ]
-    LEFT_BRACKET,
-    RIGHT_BRACKET,
-
-    // Sets { }
-    LEFT_CURLY,
-    RIGHT_CURLY,
-
-    EOF
+    }
 }

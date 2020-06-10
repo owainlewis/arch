@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2020 Owain Lewis <owain@owainlewis.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.owainlewis.arch.lang.scanner;
 
 import java.io.IOException;
@@ -6,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Scanner {
@@ -90,6 +106,8 @@ public final class Scanner {
         case '>':
           readComment();
           break;
+        case '"':
+          return readString();
         case '+':
         case '-':
           if (source.nextCharSatisfies(Character::isDigit)) {
@@ -106,7 +124,7 @@ public final class Scanner {
             }
           }
       }
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       throw new ScannerException(source.getLineNumber(), source.getColumnNumber(), e);
     }
 
@@ -127,6 +145,18 @@ public final class Scanner {
         throw new IllegalStateException("Unterminated comment literal while reading comment");
       }
     }
+  }
+
+  private Token readString() throws IOException {
+    StringBuilder builder = new StringBuilder();
+    String rest = consumeWhile((c) -> c != '"');
+    builder.append(rest);
+
+    String lexeme = builder.toString();
+    // Consume the last quote
+    source.nextChar();
+
+    return makeToken(TokenType.STRING, lexeme, lexeme);
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -156,8 +186,18 @@ public final class Scanner {
 
   private Token readNumber(char initChar) throws IOException {
     String number = consumeNumber(initChar);
-    Integer i = Integer.parseInt(number);
-    return makeToken(TokenType.INTEGER, number, i);
+    Matcher m = intPat.matcher(number);
+    if (m.matches()) {
+      Integer i = Integer.parseInt(number);
+      return makeToken(TokenType.INTEGER, number, i);
+    }
+    m = floatPat.matcher(number);
+    if (m.matches()) {
+      Double i = Double.parseDouble(number);
+      return makeToken(TokenType.FLOAT, number, i);
+    }
+
+    throw new NumberFormatException("Unexpected numeric format for " + number);
   }
 
   private String consumeNumber(char initDigit) throws IOException {
