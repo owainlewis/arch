@@ -10,13 +10,13 @@ import symbols as sym
 let y = 10 ;
 let z = 20 ;
 
-private let double (X : X) = 2 * ;
+private let double (int -> int) = 2 * ;
 
-private let foo ([A] [B] : [A] B) =
+private let foo ([..] [..] -> [..] ) =
   dup swap pop sym.foo
 ;
 
-let bar =
+let bar (string, int -> string) =
   [ ] [dip] i [swap] push pop rot over2
 ;
 
