@@ -46,8 +46,6 @@ public final class Parser {
   }
 
   private Expression expression() {
-    System.out.println("Expr called with next " + peek());
-
     if (match(TokenType.INTEGER)) {
       return new Expression.Literal(Expression.Type.Integer, previous().getLiteral());
     }

@@ -19,55 +19,57 @@ import java.util.List;
 
 public abstract class Expression {
 
-    public enum Type {
-        Integer,
-        Float,
-        String,
-        Word,
+  public enum Type {
+    Integer,
+    Float,
+    String,
+    Word,
+    List,
+  }
+
+  public abstract Type getType();
+
+  static final class Literal extends Expression {
+    private final Type type;
+    private final Object value;
+
+    Literal(Type type, Object value) {
+      this.type = type;
+      this.value = value;
     }
 
-    static final class Literal extends Expression {
-        private final Type type;
-        private final Object value;
-
-        Literal(Type type, Object value) {
-            this.type = type;
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public Type getType() {
-            return type;
-        }
-
-        @Override
-        public String toString() {
-            return "Literal{" +
-                    "type=" + type +
-                    ", value=" + value +
-                    '}';
-        }
+    public Object getValue() {
+      return value;
     }
 
-    static final class ListExpr extends Expression {
-        private final List<Expression> expressions;
-
-        public ListExpr(List<Expression> expressions) {
-            this.expressions = expressions;
-        }
-
-        public List<Expression> getExpressions() {
-            return expressions;
-        }
-
-        @Override
-        public String toString() {
-            return "ListExpr{" +
-                    "expressions=" + expressions +
-                    '}';
-        }
+    public Type getType() {
+      return type;
     }
+
+    @Override
+    public String toString() {
+      return "Literal{" + "type=" + type + ", value=" + value + '}';
+    }
+  }
+
+  static final class ListExpr extends Expression {
+    private final List<Expression> expressions;
+
+    public ListExpr(List<Expression> expressions) {
+      this.expressions = expressions;
+    }
+
+    public List<Expression> getExpressions() {
+      return expressions;
+    }
+
+    @Override
+    public String toString() {
+      return "ListExpr{" + "expressions=" + expressions + '}';
+    }
+
+    public Type getType() {
+      return Type.List;
+    }
+  }
 }

@@ -19,19 +19,46 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
+
+// TODO the level of reflection here is painful and unnecessary
 
 @NoArgsConstructor
 public final class Interpreter {
 
-    private Stack<Expression> runtimeStack = new Stack<>();
+  private Stack<Expression> runtimeStack = new Stack<>();
 
-    public void interpret(List<Statement> statements) {
-        for (Statement statement : statements) {
-            if (statement instanceof Statement.ExpressionStmt) {
-                Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
-                runtimeStack.push(stmt.getExpression());
-                System.out.println(runtimeStack.size());
-            }
-        }
+  public void interpret(List<Statement> statements) {
+
+    Function<Stack<Expression>, Stack<Expression>> f = (Stack<Expression> s)-> {
+        Expression e1 = s.pop();
+        System.out.println(e1);
+        return s;
     };
+
+    for (Statement statement : statements) {
+      if (isExpression(statement)) {
+        Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
+        Expression e = stmt.getExpression();
+        if (e.getType() == Expression.Type.Word) {
+            Expression.Literal expr = (Expression.Literal) e;
+            String word = (String) expr.getValue();
+            if (word.equals("print")) {
+                f.apply(runtimeStack);
+            }
+
+        } else {
+          runtimeStack.push(e);
+        }
+      }
+    }
+  }
+
+  private boolean isLetStatement(Statement statement) {
+    return (statement instanceof Statement.LetStmt);
+  }
+
+  private boolean isExpression(Statement statement) {
+    return (statement instanceof Statement.ExpressionStmt);
+  }
 }

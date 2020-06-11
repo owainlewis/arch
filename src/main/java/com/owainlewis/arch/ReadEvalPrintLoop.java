@@ -53,18 +53,10 @@ public final class ReadEvalPrintLoop {
 
     try {
       List<Token> tokens = scanner.scan();
-      for (Token t : tokens) {
-        System.out.println("Token " + t);
-      }
-
       Parser parser = new Parser(tokens);
       List<Statement> statements = parser.parse();
 
-      for (Statement stmt : statements) {
-        System.out.println("Statement" + stmt);
-      }
-
-    //  interpreter.interpret(statements);
+      interpreter.interpret(statements);
 
     } catch (Exception e) {
       System.out.println("Caught Exception while processing: " + e.getMessage());
