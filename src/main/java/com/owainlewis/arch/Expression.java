@@ -39,15 +39,16 @@ public abstract class Expression {
             return value;
         }
 
+        public Type getType() {
+            return type;
+        }
+
         @Override
         public String toString() {
             return "Literal{" +
-                    "value=" + value +
+                    "type=" + type +
+                    ", value=" + value +
                     '}';
-        }
-
-        public Type getType() {
-            return type;
         }
     }
 

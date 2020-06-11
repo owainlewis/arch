@@ -35,7 +35,7 @@ public final class Parser {
     List<Statement> statements = new ArrayList<>();
 
     for (Token token : tokens) {
-      if (token.getType() == TokenType.EOF) {
+      if (isAtEnd()) {
         break;
       }
       Statement stmt = statement();
@@ -46,6 +46,8 @@ public final class Parser {
   }
 
   private Expression expression() {
+    System.out.println("Expr called with next " + peek());
+
     if (match(TokenType.INTEGER)) {
       return new Expression.Literal(Expression.Type.Integer, previous().getLiteral());
     }
@@ -59,35 +61,26 @@ public final class Parser {
       return new Expression.Literal(Expression.Type.Word, previous().getLiteral());
     }
     if (match(TokenType.LEFT_BRACKET)) {
-      return new Expression.ListExpr(block());
+      List<Expression> statements = new ArrayList<>();
+      while (!nextTokenIs(TokenType.RIGHT_BRACKET)) {
+        statements.add(expression());
+      }
+
+      consume(TokenType.RIGHT_BRACKET, "Expect ']' after block.");
+      return new Expression.ListExpr(statements);
     }
 
-    System.out.println("Fell through because " + previous());
-    System.out.println("Fell through because " + peek());
-
-    return null;
+    throw new IllegalStateException("Could not read expression " + peek());
   }
-
-    private List<Expression> block() {
-        List<Expression> statements = new ArrayList<>();
-
-        while (!check(TokenType.RIGHT_BRACKET)) {
-          statements.add(expression());
-        }
-
-        consume(TokenType.RIGHT_BRACKET, "Expect ']' after block.");
-
-        return statements;
-    }
 
   private Statement statement() {
       Statement statement;
-      if (check(TokenType.LET)) {
-        statement = letStatement();
-    } else {
-      statement = expressionStatement();
-      }
-      return statement;
+
+      if (nextTokenIs(TokenType.LET)) {
+        return letStatement();
+    }
+        Expression expr = expression();
+        return new Statement.ExpressionStmt(expr);
   }
 
   private Statement letStatement() {
@@ -97,21 +90,17 @@ public final class Parser {
     consume(TokenType.EQ, "Expect '=' in let statement");
 
     List<Expression> expressions = new ArrayList<>();
-    while (!check(TokenType.SEMICOLON)) {
-      advance();
+    while (!nextTokenIs(TokenType.SEMICOLON)) {
+      Expression e = expression();
+      expressions.add(e);
     }
-    advance(); // Consume the semicolon
+    consume(TokenType.SEMICOLON, "Expect ';'");
     return new Statement.LetStmt(ident.getLexeme(), expressions);
-  }
-
-  private Statement expressionStatement() {
-    Expression expr = expression();
-    return new Statement.ExpressionStmt(expr);
   }
 
   private boolean match(TokenType... types) {
     for (TokenType type : types) {
-      if (check(type)) {
+      if (nextTokenIs(type)) {
         advance();
         return true;
       }
@@ -121,14 +110,13 @@ public final class Parser {
   }
 
   private Token consume(TokenType type, String message) {
-    if (check(type)) return advance();
+    if (nextTokenIs(type)) return advance();
 
     throw new IllegalStateException(message);
   }
 
-  private boolean check(TokenType type) {
+  private boolean nextTokenIs(TokenType type) {
     if (isAtEnd()) return false;
-    System.out.println(peek().getType());
     return peek().getType() == type;
   }
 
