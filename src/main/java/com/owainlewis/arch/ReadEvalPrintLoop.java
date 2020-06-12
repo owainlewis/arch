@@ -15,9 +15,9 @@
  */
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.scanner.Scanner;
-import com.owainlewis.arch.lang.scanner.Source;
-import com.owainlewis.arch.lang.scanner.Token;
+import com.owainlewis.arch.scanner.Scanner;
+import com.owainlewis.arch.scanner.Source;
+import com.owainlewis.arch.scanner.Token;
 import lombok.NoArgsConstructor;
 
 import java.io.*;

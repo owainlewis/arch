@@ -15,8 +15,8 @@
  */
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.scanner.Token;
-import com.owainlewis.arch.lang.scanner.TokenType;
+import com.owainlewis.arch.scanner.Token;
+import com.owainlewis.arch.scanner.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;

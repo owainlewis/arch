@@ -17,16 +17,24 @@ package com.owainlewis.arch;
 
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.function.Function;
 
 // TODO the level of reflection here is painful and unnecessary
 
-@NoArgsConstructor
 public final class Interpreter {
 
   private Stack<Expression> runtimeStack = new Stack<>();
+
+  private Map<String, Function<Stack<Expression>, Stack<Expression>>> env = new HashMap<>();
+
+  public Interpreter() {
+      this.env.put("swap", Operations.swap);
+      this.env.put("debug", Operations.debug);
+  }
 
   public void interpret(List<Statement> statements) {
 
@@ -41,10 +49,14 @@ public final class Interpreter {
         Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
         Expression e = stmt.getExpression();
         if (e.getType() == Expression.Type.Word) {
+            // Do a lookup dispatch
             Expression.Literal expr = (Expression.Literal) e;
             String word = (String) expr.getValue();
-            if (word.equals("print")) {
-                f.apply(runtimeStack);
+            if (env.containsKey(word)) {
+                env.get(word).apply(runtimeStack);
+            } else {
+                // This is an error I think?
+                throw new IllegalArgumentException("Word called before bound");
             }
 
         } else {
@@ -61,4 +73,21 @@ public final class Interpreter {
   private boolean isExpression(Statement statement) {
     return (statement instanceof Statement.ExpressionStmt);
   }
+}
+
+class Operations {
+
+    public static Function<Stack<Expression>, Stack<Expression>> debug = (Stack<Expression> s) -> {
+        s.forEach(System.out::println);
+        return s;
+    };
+
+    public static Function<Stack<Expression>, Stack<Expression>> swap = (Stack<Expression> s)-> {
+        Expression e1 = s.pop();
+        Expression e2 = s.pop();
+
+        s.push(e1);
+        s.push(e2);
+        return s;
+    };
 }

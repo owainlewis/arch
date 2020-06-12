@@ -15,8 +15,8 @@
  */
 package com.owainlewis.arch;
 
-import com.owainlewis.arch.lang.scanner.Scanner;
-import com.owainlewis.arch.lang.scanner.Source;
+import com.owainlewis.arch.scanner.Scanner;
+import com.owainlewis.arch.scanner.Source;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +72,7 @@ public class ParserTest {
   void testParseStringLiteral() throws IOException {
     Parser parser = makeParser("\"Hello, World!\"");
     List<Statement> statements = parser.parse();
-    
+
     Statement expected = new Statement.ExpressionStmt(stringExpr("Hello, World!"));
 
     Assertions.assertEquals(new ArrayList<>(Collections.singletonList(expected)), statements);
