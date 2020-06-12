@@ -15,8 +15,6 @@
  */
 package com.owainlewis.arch;
 
-import lombok.NoArgsConstructor;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ public final class Interpreter {
   public Interpreter() {
       this.env.put("swap", Operations.swap);
       this.env.put("debug", Operations.debug);
+      this.env.put("+", Operations.binOpPlus);
   }
 
   public void interpret(List<Statement> statements) {
@@ -53,7 +52,7 @@ public final class Interpreter {
             Expression.Literal expr = (Expression.Literal) e;
             String word = (String) expr.getValue();
             if (env.containsKey(word)) {
-                env.get(word).apply(runtimeStack);
+                env.get(word).apply(runtimeStack, statements);
             } else {
                 // This is an error I think?
                 throw new IllegalArgumentException("Word called before bound");
@@ -73,21 +72,4 @@ public final class Interpreter {
   private boolean isExpression(Statement statement) {
     return (statement instanceof Statement.ExpressionStmt);
   }
-}
-
-class Operations {
-
-    public static Function<Stack<Expression>, Stack<Expression>> debug = (Stack<Expression> s) -> {
-        s.forEach(System.out::println);
-        return s;
-    };
-
-    public static Function<Stack<Expression>, Stack<Expression>> swap = (Stack<Expression> s)-> {
-        Expression e1 = s.pop();
-        Expression e2 = s.pop();
-
-        s.push(e1);
-        s.push(e2);
-        return s;
-    };
 }

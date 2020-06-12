@@ -30,6 +30,8 @@ public abstract class Expression {
 
   public abstract Type getType();
 
+  public abstract Object getValue();
+
   static final class Literal extends Expression {
     private final Type type;
     private final Object value;
@@ -57,8 +59,7 @@ public abstract class Expression {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       Literal literal = (Literal) o;
-      return type == literal.type &&
-              Objects.equals(value, literal.value);
+      return type == literal.type && Objects.equals(value, literal.value);
     }
 
     @Override
@@ -80,6 +81,10 @@ public abstract class Expression {
 
     public Type getType() {
       return Type.List;
+    }
+
+    public Object getValue() {
+      return expressions;
     }
 
     @Override
