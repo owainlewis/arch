@@ -17,32 +17,64 @@ package com.owainlewis.arch;
 
 import com.owainlewis.arch.lang.scanner.Scanner;
 import com.owainlewis.arch.lang.scanner.Source;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ParserTest {
 
-    private Parser makeParser(String input) throws IOException {
-        PushbackReader reader = new PushbackReader(new StringReader(input));
-        Scanner s = new Scanner(new Source(reader));
+  private Parser makeParser(String input) throws IOException {
+    PushbackReader reader = new PushbackReader(new StringReader(input));
+    Scanner s = new Scanner(new Source(reader));
 
-        return new Parser(s.scan());
-    }
+    return new Parser(s.scan());
+  }
 
-    @Test
-    void testParseLetStatement() throws IOException {
-        Parser parser = makeParser("let x = 10 ;");
-        List<Statement> statements = parser.parse();
-        System.out.println(statements);
+  private Expression intExpr(int value) {
+    return new Expression.Literal(Expression.Type.Integer, value);
+  }
 
-    }
+  private Expression stringExpr(String value) {
+    return new Expression.Literal(Expression.Type.String, value);
+  }
 
-    @Test()
-    void testParseLiteral() {
+  @Test
+  void testParseLetStatement() throws IOException {
+    Parser parser = makeParser("let x = 10 ;");
+    List<Statement> statements = parser.parse();
 
-    }
+    ArrayList<Expression> expectedBody = new ArrayList<>();
+    expectedBody.add(new Expression.Literal(Expression.Type.Integer, 10));
+    Statement expected = new Statement.LetStmt("x", expectedBody);
+
+    Assertions.assertEquals(Collections.singletonList(expected), statements);
+  }
+
+  @Test
+  void testParseListLiteral() throws IOException {
+    Parser parser = makeParser("[1 2 3]");
+    List<Statement> statements = parser.parse();
+
+    List<Expression> innerForms = Arrays.asList(intExpr(1), intExpr(2), intExpr(3));
+    Statement expected = new Statement.ExpressionStmt(new Expression.ListExpr(innerForms));
+
+    Assertions.assertEquals(new ArrayList<>(Collections.singletonList(expected)), statements);
+  }
+
+  @Test
+  void testParseStringLiteral() throws IOException {
+    Parser parser = makeParser("\"Hello, World!\"");
+    List<Statement> statements = parser.parse();
+    
+    Statement expected = new Statement.ExpressionStmt(stringExpr("Hello, World!"));
+
+    Assertions.assertEquals(new ArrayList<>(Collections.singletonList(expected)), statements);
+  }
 }

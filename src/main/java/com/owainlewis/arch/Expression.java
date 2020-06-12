@@ -16,6 +16,7 @@
 package com.owainlewis.arch;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Expression {
 
@@ -50,6 +51,20 @@ public abstract class Expression {
     public String toString() {
       return "Literal{" + "type=" + type + ", value=" + value + '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Literal literal = (Literal) o;
+      return type == literal.type &&
+              Objects.equals(value, literal.value);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(type, value);
+    }
   }
 
   static final class ListExpr extends Expression {
@@ -63,13 +78,26 @@ public abstract class Expression {
       return expressions;
     }
 
+    public Type getType() {
+      return Type.List;
+    }
+
     @Override
     public String toString() {
       return "ListExpr{" + "expressions=" + expressions + '}';
     }
 
-    public Type getType() {
-      return Type.List;
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      ListExpr listExpr = (ListExpr) o;
+      return Objects.equals(expressions, listExpr.expressions);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(expressions);
     }
   }
 }
