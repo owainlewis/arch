@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 // TODO the level of reflection here is painful and unnecessary
@@ -27,7 +28,7 @@ public final class Interpreter {
 
   private Stack<Expression> runtimeStack = new Stack<>();
 
-  private Map<String, Function<Stack<Expression>, Stack<Expression>>> env = new HashMap<>();
+  private Map<String, BiFunction<Stack<Expression>, List<Statement>, Stack<Expression>>> env = new HashMap<>();
 
   public Interpreter() {
       this.env.put("swap", Operations.swap);
