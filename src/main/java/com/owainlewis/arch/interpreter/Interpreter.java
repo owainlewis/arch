@@ -33,7 +33,7 @@ public final class Interpreter {
   private Map<String, BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>>> dictionary = new HashMap<>();
 
   public Interpreter() {
-      this.dictionary.put("test", Operations.test);
+      this.dictionary.put("test", Operations.iCombinator);
 //      this.dictionary.put("debug", Operations.debug);
 //      this.dictionary.put("+", Operations.binOpPlus);
 //      this.dictionary.put("i", Operations.iCombinator);
@@ -44,13 +44,8 @@ public final class Interpreter {
       new LinkedList<>(statements)
               .descendingIterator()
               .forEachRemaining(instructions::push);
-
-      instructions.forEach(System.out::println);
-
     while(!instructions.isEmpty()) {
       Statement statement = instructions.pop();
-      System.out.println("Executing " + statement);
-      
       if (isExpression(statement)) {
         Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
         Expression e = stmt.getExpression();

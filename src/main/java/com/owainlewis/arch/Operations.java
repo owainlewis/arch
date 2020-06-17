@@ -27,8 +27,20 @@ public class Operations {
 
 private interface BiOperation extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {}
 
-    public static BiOperation test = (Stack<Statement> instructions, Stack<Expression> stack) -> {
+// Testing the i combinator
+    public static BiOperation iCombinator = (Stack<Statement> instructions, Stack<Expression> stack) -> {
+        System.out.println("HELLO");
         instructions.forEach(System.out::println);
+
+    System.out.println(instructions.size());
+        Expression e1 = stack.pop();
+        if (e1.getType().equals(Expression.Type.List)) {
+            Expression.ListExpr le = (Expression.ListExpr) e1;
+            List<Expression> expressions = le.getExpressions();
+            expressions.stream().forEach(e -> instructions.push(new Statement.ExpressionStmt(e1)));
+        }
+
+        System.out.println(instructions.size());
         return stack;
     };
 
