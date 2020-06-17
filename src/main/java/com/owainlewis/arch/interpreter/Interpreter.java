@@ -13,38 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.owainlewis.arch;
+package com.owainlewis.arch.interpreter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import com.owainlewis.arch.Expression;
+import com.owainlewis.arch.Operations;
+import com.owainlewis.arch.Statement;
+
+import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 // TODO the level of reflection here is painful and unnecessary
 
 public final class Interpreter {
 
+  private Stack<Statement> instructions = new Stack<>();
   private Stack<Expression> runtimeStack = new Stack<>();
 
-  private Map<String, BiFunction<Stack<Expression>, List<Statement>, Stack<Expression>>> env = new HashMap<>();
+  // TODO move this to the constructor and inject
+  private Map<String, BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>>> dictionary = new HashMap<>();
 
   public Interpreter() {
-      this.env.put("swap", Operations.swap);
-      this.env.put("debug", Operations.debug);
-      this.env.put("+", Operations.binOpPlus);
+      this.dictionary.put("test", Operations.test);
+//      this.dictionary.put("debug", Operations.debug);
+//      this.dictionary.put("+", Operations.binOpPlus);
+//      this.dictionary.put("i", Operations.iCombinator);
   }
 
   public void interpret(List<Statement> statements) {
+      // Push instructions into our instruction stack
+      new LinkedList<>(statements)
+              .descendingIterator()
+              .forEachRemaining(instructions::push);
 
-    Function<Stack<Expression>, Stack<Expression>> f = (Stack<Expression> s)-> {
-        Expression e1 = s.pop();
-        System.out.println(e1);
-        return s;
-    };
+      instructions.forEach(System.out::println);
 
-    for (Statement statement : statements) {
+    while(!instructions.isEmpty()) {
+      Statement statement = instructions.pop();
+      System.out.println("Executing " + statement);
+      
       if (isExpression(statement)) {
         Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
         Expression e = stmt.getExpression();
@@ -52,13 +58,11 @@ public final class Interpreter {
             // Do a lookup dispatch
             Expression.Literal expr = (Expression.Literal) e;
             String word = (String) expr.getValue();
-            if (env.containsKey(word)) {
-                env.get(word).apply(runtimeStack, statements);
+            if (dictionary.containsKey(word)) {
+                dictionary.get(word).apply(instructions, runtimeStack);
             } else {
-                // This is an error I think?
                 throw new IllegalArgumentException("Word called before bound");
             }
-
         } else {
           runtimeStack.push(e);
         }

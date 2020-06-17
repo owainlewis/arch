@@ -15,6 +15,7 @@
  */
 package com.owainlewis.arch;
 
+import com.owainlewis.arch.interpreter.Interpreter;
 import com.owainlewis.arch.scanner.Scanner;
 import com.owainlewis.arch.scanner.Source;
 import com.owainlewis.arch.scanner.Token;
@@ -59,7 +60,7 @@ public final class ReadEvalPrintLoop {
       interpreter.interpret(statements);
 
     } catch (Exception e) {
-      System.out.println("Caught Exception while processing: " + e.getMessage());
+      System.out.println("Caught Exception while processing: " + e);
     }
   }
 }

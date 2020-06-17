@@ -18,15 +18,24 @@ package com.owainlewis.arch;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * This class defines all of the primary operations in arch.
  */
 public class Operations {
+
+private interface BiOperation extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {}
+
+    public static BiOperation test = (Stack<Statement> instructions, Stack<Expression> stack) -> {
+        instructions.forEach(System.out::println);
+        return stack;
+    };
+
     /**
      * Operation is an interface used to type alias the generic stack function
      */
-    private interface Operation extends BiFunction<Stack<Expression>, List<Statement>, Stack<Expression>> {}
+    private interface Operation extends Function<Stack<Expression>, Stack<Expression>> {}
     /**
      * Debug
      *
@@ -34,7 +43,7 @@ public class Operations {
      *
      * <p>Prints the contents of the entire stack printing each item on a new line</p>
      */
-    public static Operation debug = (Stack<Expression> s, List<Statement> stmts) -> {
+    public static Operation debug = (Stack<Expression> s) -> {
         s.forEach(System.out::println);
         return s;
     };
@@ -45,7 +54,7 @@ public class Operations {
      * [x:y] -> [y:x]
      *
      */
-    public static Operation swap = (Stack<Expression> s, List<Statement> stmts) -> {
+    public static Operation swap = (Stack<Expression> s) -> {
         Expression e1 = s.pop();
         Expression e2 = s.pop();
         s.push(e1);
@@ -53,7 +62,7 @@ public class Operations {
         return s;
     };
 
-  public static Operation binOpPlus = (Stack<Expression> s, List<Statement> stmts) -> {
+  public static Operation binOpPlus = (Stack<Expression> s) -> {
         Expression e1 = s.pop();
         Expression e2 = s.pop();
 
@@ -65,6 +74,19 @@ public class Operations {
 
         // Type error
 
+        return s;
+      };
+
+  public static Operation iCombinator =
+      (Stack<Expression> s) -> {
+        Expression e1 = s.pop();
+        if (e1.getType().equals(Expression.Type.List)) {
+            Expression.ListExpr le = (Expression.ListExpr) e1;
+            List<Expression> expressions = le.getExpressions();
+
+
+
+        }
         return s;
       };
 }

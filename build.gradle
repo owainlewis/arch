@@ -16,6 +16,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.3'
     compile 'org.projectlombok:lombok:1.18.12'
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm
+    compile group: 'org.ow2.asm', name: 'asm', version: '7.0'
 }
 
 apply plugin : "java"

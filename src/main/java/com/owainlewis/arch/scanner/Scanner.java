@@ -167,7 +167,7 @@ public final class Scanner {
     StringBuilder builder = new StringBuilder();
     builder.append(initChar);
 
-    String rest = consumeWhile(this::isIdentifier);
+    String rest = consumeWhile(this::isValidSymbolic);
 
     builder.append(rest);
 
@@ -183,6 +183,10 @@ public final class Scanner {
 
   private boolean isIdentifier(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '-' || c == '=' || c == '+';
+  }
+
+  private boolean isValidSymbolic(char c) {
+    return c != ';' && !Character.isWhitespace(c);
   }
 
   //////////////////////////////////////////////////////////////////////

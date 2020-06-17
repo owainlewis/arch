@@ -1,0 +1,15 @@
+\\ Type examples
+
+// boolean, byte, char, short, int, long, float, double
+
+let gcd :: int int -> int [int] =
+  { }
+;
+
+let noop :: void = "HELLO" print ;
+
+let main :: void ->
+
+
+
+

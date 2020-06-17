@@ -32,7 +32,7 @@ public abstract class Expression {
 
   public abstract Object getValue();
 
-  static final class Literal extends Expression {
+  public static final class Literal extends Expression {
     private final Type type;
     private final Object value;
 
@@ -68,7 +68,7 @@ public abstract class Expression {
     }
   }
 
-  static final class ListExpr extends Expression {
+  public static final class ListExpr extends Expression {
     private final List<Expression> expressions;
 
     public ListExpr(List<Expression> expressions) {

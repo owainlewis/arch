@@ -22,7 +22,7 @@ import java.util.Objects;
 
 public abstract class Statement {
 
-  static class ExpressionStmt extends Statement {
+  public static class ExpressionStmt extends Statement {
     private final Expression expression;
 
     ExpressionStmt(@NonNull Expression expression) {
@@ -67,7 +67,7 @@ public abstract class Statement {
    *
    * <pre>let y = [a] b ;</pre>
    */
-  static class LetStmt extends Statement {
+  public static class LetStmt extends Statement {
     private boolean isPrivate = false;
     private final String name;
     private final List<Expression> body;
