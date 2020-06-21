@@ -25,7 +25,7 @@ public abstract class Statement {
   public static class ExpressionStmt extends Statement {
     private final Expression expression;
 
-    ExpressionStmt(@NonNull Expression expression) {
+    public ExpressionStmt(@NonNull Expression expression) {
       this.expression = expression;
     }
 

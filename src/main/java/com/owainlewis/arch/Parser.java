@@ -34,6 +34,8 @@ public final class Parser {
   public List<Statement> parse() {
     List<Statement> statements = new ArrayList<>();
 
+    System.out.println(tokens);
+
     for (Token token : tokens) {
       if (isAtEnd()) {
         break;
@@ -72,13 +74,13 @@ public final class Parser {
   }
 
   private Statement statement() {
-      Statement statement;
+    Statement statement;
 
-      if (nextTokenIs(TokenType.LET)) {
-        return letStatement();
+    if (nextTokenIs(TokenType.LET)) {
+      return letStatement();
     }
-        Expression expr = expression();
-        return new Statement.ExpressionStmt(expr);
+    Expression expr = expression();
+    return new Statement.ExpressionStmt(expr);
   }
 
   private Statement letStatement() {

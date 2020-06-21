@@ -84,9 +84,7 @@ public final class Scanner {
   }
 
   public Token nextToken() throws IOException {
-    // Skip whitespace
     char c = source.nextChar();
-
     while (Character.isWhitespace(c)) {
       c = source.nextChar();
     }
@@ -103,7 +101,7 @@ public final class Scanner {
           return makeUnaryCharToken(TokenType.EQ, c);
         case ';':
           return makeUnaryCharToken(TokenType.SEMICOLON, c);
-        case '>':
+        case '#':
           readComment();
           break;
         case '"':
@@ -132,7 +130,7 @@ public final class Scanner {
   }
 
   /**
-   * Comments begin with a > char and run until the end of a line
+   * Comments begin with a # char and run until the end of a line
    *
    * @throws IOException
    */
@@ -167,7 +165,7 @@ public final class Scanner {
     StringBuilder builder = new StringBuilder();
     builder.append(initChar);
 
-    String rest = consumeWhile(this::isValidSymbolic);
+    String rest = consumeWhile(this::isIdentifier);
 
     builder.append(rest);
 
@@ -183,10 +181,6 @@ public final class Scanner {
 
   private boolean isIdentifier(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '-' || c == '=' || c == '+';
-  }
-
-  private boolean isValidSymbolic(char c) {
-    return c != ';' && !Character.isWhitespace(c);
   }
 
   //////////////////////////////////////////////////////////////////////

@@ -18,87 +18,79 @@ package com.owainlewis.arch;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-/**
- * This class defines all of the primary operations in arch.
- */
+/** This class defines all of the primary operations in arch. */
 public class Operations {
 
-private interface BiOperation extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {}
+  public interface BiOperation
+      extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {}
 
-// Testing the i combinator
-    public static BiOperation iCombinator = (Stack<Statement> instructions, Stack<Expression> stack) -> {
-        System.out.println("HELLO");
-        instructions.forEach(System.out::println);
-
-    System.out.println(instructions.size());
+  // Testing the i combinator
+  public static BiOperation iCombinator =
+      (Stack<Statement> instructions, Stack<Expression> stack) -> {
         Expression e1 = stack.pop();
         if (e1.getType().equals(Expression.Type.List)) {
-            Expression.ListExpr le = (Expression.ListExpr) e1;
-            List<Expression> expressions = le.getExpressions();
-            expressions.stream().forEach(e -> instructions.push(new Statement.ExpressionStmt(e1)));
+          Expression.ListExpr le = (Expression.ListExpr) e1;
+          List<Expression> expressions = le.getExpressions();
+          expressions.forEach(e -> instructions.push(new Statement.ExpressionStmt(e1)));
+        } else {
+          throw new RuntimeException("Type fail");
         }
 
-        System.out.println(instructions.size());
         return stack;
-    };
-
-    /**
-     * Operation is an interface used to type alias the generic stack function
-     */
-    private interface Operation extends Function<Stack<Expression>, Stack<Expression>> {}
-    /**
-     * Debug
-     *
-     * [] -> void
-     *
-     * <p>Prints the contents of the entire stack printing each item on a new line</p>
-     */
-    public static Operation debug = (Stack<Expression> s) -> {
-        s.forEach(System.out::println);
-        return s;
-    };
-
-    /**
-     * Swap
-     *
-     * [x:y] -> [y:x]
-     *
-     */
-    public static Operation swap = (Stack<Expression> s) -> {
-        Expression e1 = s.pop();
-        Expression e2 = s.pop();
-        s.push(e1);
-        s.push(e2);
-        return s;
-    };
-
-  public static Operation binOpPlus = (Stack<Expression> s) -> {
-        Expression e1 = s.pop();
-        Expression e2 = s.pop();
-
-        if (e1.getType().equals(Expression.Type.Integer) && e2.getType().equals(Expression.Type.Integer)) {
-             Integer a = (Integer) e1.getValue();
-             Integer b = (Integer) e2.getValue();
-             s.push(new Expression.Literal(Expression.Type.Integer, a + b));
-        }
-
-        // Type error
-
-        return s;
       };
 
-  public static Operation iCombinator =
-      (Stack<Expression> s) -> {
-        Expression e1 = s.pop();
-        if (e1.getType().equals(Expression.Type.List)) {
-            Expression.ListExpr le = (Expression.ListExpr) e1;
-            List<Expression> expressions = le.getExpressions();
-
-
-
-        }
-        return s;
+  public static BiOperation debug =
+      (Stack<Statement> instructions, Stack<Expression> stack) -> {
+        System.out.println("Debug");
+        stack.forEach(System.out::println);
+        instructions.forEach(System.out::println);
+        return stack;
       };
+  //
+  //  /** Operation is an interface used to type alias the generic stack function */
+  //  private interface Operation extends Function<Stack<Expression>, Stack<Expression>> {}
+  //  /**
+  //   * Debug
+  //   *
+  //   * <p>[] -> void
+  //   *
+  //   * <p>Prints the contents of the entire stack printing each item on a new line
+  //   */
+  //  public static Operation debug =
+  //      (Stack<Expression> s) -> {
+  //        s.forEach(System.out::println);
+  //        return s;
+  //      };
+  //
+  //  /**
+  //   * Swap
+  //   *
+  //   * <p>[x:y] -> [y:x]
+  //   */
+  //  public static Operation swap =
+  //      (Stack<Expression> s) -> {
+  //        Expression e1 = s.pop();
+  //        Expression e2 = s.pop();
+  //        s.push(e1);
+  //        s.push(e2);
+  //        return s;
+  //      };
+  //
+  //  public static Operation binOpPlus =
+  //      (Stack<Expression> s) -> {
+  //        Expression e1 = s.pop();
+  //        Expression e2 = s.pop();
+  //
+  //        if (e1.getType().equals(Expression.Type.Integer)
+  //            && e2.getType().equals(Expression.Type.Integer)) {
+  //          Integer a = (Integer) e1.getValue();
+  //          Integer b = (Integer) e2.getValue();
+  //          s.push(new Expression.Literal(Expression.Type.Integer, a + b));
+  //        }
+  //
+  //        // Type error
+  //
+  //        return s;
+  //      };
 }

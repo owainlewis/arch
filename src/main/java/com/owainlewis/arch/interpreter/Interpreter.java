@@ -16,53 +16,41 @@
 package com.owainlewis.arch.interpreter;
 
 import com.owainlewis.arch.Expression;
-import com.owainlewis.arch.Operations;
 import com.owainlewis.arch.Statement;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.function.BiFunction;
-
-// TODO the level of reflection here is painful and unnecessary
 
 public final class Interpreter {
 
-  private Stack<Statement> instructions = new Stack<>();
-  private Stack<Expression> runtimeStack = new Stack<>();
+  private State state;
 
-  // TODO move this to the constructor and inject
-  private Map<String, BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>>> dictionary = new HashMap<>();
+  private Map<String, BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>>>
+      dictionary = new HashMap<>();
 
   public Interpreter() {
-      this.dictionary.put("test", Operations.iCombinator);
-//      this.dictionary.put("debug", Operations.debug);
-//      this.dictionary.put("+", Operations.binOpPlus);
-//      this.dictionary.put("i", Operations.iCombinator);
+    this.state = new State();
   }
 
-  public void interpret(List<Statement> statements) {
-      // Push instructions into our instruction stack
-      new LinkedList<>(statements)
-              .descendingIterator()
-              .forEachRemaining(instructions::push);
-    while(!instructions.isEmpty()) {
-      Statement statement = instructions.pop();
-      if (isExpression(statement)) {
+  public void interpret(List<Statement> instructions) {
+    state.setInstructions(instructions);
+    while (state.hasInstructions()) {
+      Statement statement = state.nextInstruction();
+      if (isLetStatement(statement)) {
+        Statement.LetStmt stmt = (Statement.LetStmt) statement;
+        System.out.println("Defining word " + stmt.getName());
+      } else if (isExpression(statement)) {
         Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
         Expression e = stmt.getExpression();
-        if (e.getType() == Expression.Type.Word) {
-            // Do a lookup dispatch
-            Expression.Literal expr = (Expression.Literal) e;
-            String word = (String) expr.getValue();
-            if (dictionary.containsKey(word)) {
-                dictionary.get(word).apply(instructions, runtimeStack);
-            } else {
-                throw new IllegalArgumentException("Word called before bound");
-            }
-        } else {
-          runtimeStack.push(e);
-        }
+        state.apply(e);
       }
     }
+  }
+
+  private void executeWord(String word) {
   }
 
   private boolean isLetStatement(Statement statement) {
