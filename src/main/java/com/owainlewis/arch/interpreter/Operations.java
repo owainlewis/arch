@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.owainlewis.arch;
+package com.owainlewis.arch.interpreter;
+
+import com.owainlewis.arch.Expression;
+import com.owainlewis.arch.Statement;
 
 import java.util.List;
 import java.util.Stack;
@@ -42,9 +45,10 @@ public class Operations {
 
   public static BiOperation debug =
       (Stack<Statement> instructions, Stack<Expression> stack) -> {
-        System.out.println("Debug");
-        stack.forEach(System.out::println);
-        instructions.forEach(System.out::println);
+        System.out.print("[ ");
+        stack.forEach(e -> System.out.print(e.prettyPrint() + " "));
+        System.out.print("]");
+        System.out.println("");
         return stack;
       };
   //

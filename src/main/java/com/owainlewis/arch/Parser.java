@@ -33,9 +33,6 @@ public final class Parser {
 
   public List<Statement> parse() {
     List<Statement> statements = new ArrayList<>();
-
-    System.out.println(tokens);
-
     for (Token token : tokens) {
       if (isAtEnd()) {
         break;

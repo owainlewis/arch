@@ -60,6 +60,7 @@ public final class ReadEvalPrintLoop {
       interpreter.interpret(statements);
 
     } catch (Exception e) {
+      e.printStackTrace();
       System.out.println("Caught Exception while processing: " + e);
     }
   }

@@ -17,6 +17,7 @@ package com.owainlewis.arch;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class Expression {
 
@@ -31,6 +32,8 @@ public abstract class Expression {
   public abstract Type getType();
 
   public abstract Object getValue();
+
+  public abstract String prettyPrint();
 
   public static final class Literal extends Expression {
     private final Type type;
@@ -51,7 +54,11 @@ public abstract class Expression {
 
     @Override
     public String toString() {
-      return "Literal{" + "type=" + type + ", value=" + value + '}';
+        return "Literal{" + "type=" + type + ", value=" + value + '}';
+    }
+
+    public String prettyPrint() {
+      return value.toString();
     }
 
     @Override
@@ -90,6 +97,10 @@ public abstract class Expression {
     @Override
     public String toString() {
       return "ListExpr{" + "expressions=" + expressions + '}';
+    }
+
+    public String prettyPrint() {
+      return expressions.stream().map(Expression::prettyPrint).collect(Collectors.toList()).toString();
     }
 
     @Override

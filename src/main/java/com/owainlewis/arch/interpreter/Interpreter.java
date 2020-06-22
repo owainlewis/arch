@@ -18,39 +18,64 @@ package com.owainlewis.arch.interpreter;
 import com.owainlewis.arch.Expression;
 import com.owainlewis.arch.Statement;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public final class Interpreter {
 
-  private State state;
+  private Stack<Statement> instructions = new Stack<>();
 
+  private Stack<Expression> stack = new Stack<>();
+
+  /** Internal dictionary * */
   private Map<String, BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>>>
-      dictionary = new HashMap<>();
+          dictionary = new HashMap<>();
+
+  /** User dictionary * */
+  private Map<String, List<Expression>> userDictionary = new HashMap<>();
 
   public Interpreter() {
-    this.state = new State();
+    this.dictionary =
+            Map.of(
+                    "debug", Operations.debug,
+                    "i", Operations.iCombinator);
+  }
+
+  public void apply(Expression e) {
+    if (e.getType() == Expression.Type.Word) {
+      Expression.Literal expr = (Expression.Literal) e;
+      String word = (String) expr.getValue();
+      if (dictionary.containsKey(word)) {
+        dictionary.get(word).apply(instructions, stack);
+      } else if (userDictionary.containsKey(word)) {
+        for (Expression ex : userDictionary.get(word)) {
+          apply(ex);
+        }
+      } else {
+        throw new IllegalArgumentException("Word called before assignment " + word);
+      }
+    } else {
+      stack.push(e);
+    }
   }
 
   public void interpret(List<Statement> instructions) {
-    state.setInstructions(instructions);
-    while (state.hasInstructions()) {
-      Statement statement = state.nextInstruction();
+    this.setInstructions(instructions);
+    while (!this.instructions.isEmpty()) {
+      Statement statement = this.instructions.pop();
       if (isLetStatement(statement)) {
         Statement.LetStmt stmt = (Statement.LetStmt) statement;
         System.out.println("Defining word " + stmt.getName());
       } else if (isExpression(statement)) {
         Statement.ExpressionStmt stmt = (Statement.ExpressionStmt) statement;
         Expression e = stmt.getExpression();
-        state.apply(e);
+        this.apply(e);
       }
     }
   }
 
-  private void executeWord(String word) {
+  public void setInstructions(List<Statement> statements) {
+    new LinkedList<>(statements).descendingIterator().forEachRemaining(this.instructions::push);
   }
 
   private boolean isLetStatement(Statement statement) {
