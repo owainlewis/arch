@@ -29,16 +29,17 @@ public final class Interpreter {
 
   /** Internal dictionary * */
   private Map<String, BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>>>
-          dictionary = new HashMap<>();
+      dictionary = new HashMap<>();
 
   /** User dictionary * */
   private Map<String, List<Expression>> userDictionary = new HashMap<>();
 
   public Interpreter() {
     this.dictionary =
-            Map.of(
-                    "debug", Operations.debug,
-                    "i", Operations.iCombinator);
+        Map.of(
+            "debug", Operations.debug,
+                "swap", Operations.swap,
+            "i", Operations.iCombinator);
   }
 
   public void apply(Expression e) {

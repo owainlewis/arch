@@ -23,12 +23,26 @@ import java.util.Stack;
 import java.util.function.BiFunction;
 
 /** This class defines all of the primary operations in arch. */
-public class Operations {
+public final class Operations {
 
   public interface BiOperation
-      extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {}
+      extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {};
 
-  // Testing the i combinator
+    /**
+     * Swap two values on the stack
+     *
+     * [a b] swap = [b a]
+     */
+  public static BiOperation swap = (Stack<Statement> instructions, Stack<Expression> stack) -> {
+      Expression e1 = stack.pop();
+      Expression e2 = stack.pop();
+
+      stack.push(e1);
+      stack.push(e2);
+
+      return stack;
+  };
+
   public static BiOperation iCombinator =
       (Stack<Statement> instructions, Stack<Expression> stack) -> {
         Expression e1 = stack.pop();
@@ -51,50 +65,4 @@ public class Operations {
         System.out.println("");
         return stack;
       };
-  //
-  //  /** Operation is an interface used to type alias the generic stack function */
-  //  private interface Operation extends Function<Stack<Expression>, Stack<Expression>> {}
-  //  /**
-  //   * Debug
-  //   *
-  //   * <p>[] -> void
-  //   *
-  //   * <p>Prints the contents of the entire stack printing each item on a new line
-  //   */
-  //  public static Operation debug =
-  //      (Stack<Expression> s) -> {
-  //        s.forEach(System.out::println);
-  //        return s;
-  //      };
-  //
-  //  /**
-  //   * Swap
-  //   *
-  //   * <p>[x:y] -> [y:x]
-  //   */
-  //  public static Operation swap =
-  //      (Stack<Expression> s) -> {
-  //        Expression e1 = s.pop();
-  //        Expression e2 = s.pop();
-  //        s.push(e1);
-  //        s.push(e2);
-  //        return s;
-  //      };
-  //
-  //  public static Operation binOpPlus =
-  //      (Stack<Expression> s) -> {
-  //        Expression e1 = s.pop();
-  //        Expression e2 = s.pop();
-  //
-  //        if (e1.getType().equals(Expression.Type.Integer)
-  //            && e2.getType().equals(Expression.Type.Integer)) {
-  //          Integer a = (Integer) e1.getValue();
-  //          Integer b = (Integer) e2.getValue();
-  //          s.push(new Expression.Literal(Expression.Type.Integer, a + b));
-  //        }
-  //
-  //        // Type error
-  //
-  //        return s;
-  //      };
 }
