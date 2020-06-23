@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.owainlewis.arch.types;
+package com.owainlewis.arch.interpreter;
 
-public abstract class Value {
+import com.owainlewis.arch.Expression;
 
-    public static class IntValue extends Value {
+public class InterpreterTest {
 
-        private Integer i;
-
-        public IntValue(Integer i) {
-            this.i = i;
-        }
-    }
-
-    public static class StringValue extends Value {
-        private String i;
-
-        public StringValue(String i) {
-            this.i = i;
-        }
+    private Expression intLiteral(int x) {
+        return new Expression.Literal(Expression.Type.Integer, x);
     }
 }

@@ -22,11 +22,20 @@ import java.util.List;
 import java.util.Stack;
 import java.util.function.BiFunction;
 
-/** This class defines all of the primary operations in arch. */
+/**
+ * This class defines the initial dictionary words for Arch.
+ *
+ */
 public final class Operations {
 
   public interface BiOperation
       extends BiFunction<Stack<Statement>, Stack<Expression>, Stack<Expression>> {};
+
+  private static void ensureN(int n, Stack<Expression> stack) {
+      if (stack.size() < n) {
+          throw new IllegalStateException("Expected " + n + " values on the stack but got " + stack.size());
+      }
+  }
 
     /**
      * Swap two values on the stack
@@ -34,14 +43,13 @@ public final class Operations {
      * [a b] swap = [b a]
      */
   public static BiOperation swap = (Stack<Statement> instructions, Stack<Expression> stack) -> {
+      ensureN(2, stack);
+
       Expression e1 = stack.pop();
       Expression e2 = stack.pop();
 
       stack.push(e1);
-      stack.push(e2);
-
-      return stack;
-  };
+   
 
   public static BiOperation iCombinator =
       (Stack<Statement> instructions, Stack<Expression> stack) -> {

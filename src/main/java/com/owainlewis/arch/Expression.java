@@ -39,7 +39,7 @@ public abstract class Expression {
     private final Type type;
     private final Object value;
 
-    Literal(Type type, Object value) {
+    public Literal(Type type, Object value) {
       this.type = type;
       this.value = value;
     }
