@@ -5,18 +5,14 @@ Arch is a stack based functional programming language based on combinatory logic
 ```ocaml
 module base
 
-import symbols as sym
+import symbols ( foo, bar );
 
 let y = 10 ;
 let z = 20 ;
 
-private let double (int -> int) = 2 * ;
+private let double :: int -> int = 2 * ;
 
-private let foo ([..] [..] -> [..] ) =
-  dup swap pop sym.foo
-;
-
-let bar (string, int -> string) =
+let bar :: string int -> [string] =
   [ ] [dip] i [swap] push pop rot over2
 ;
 
