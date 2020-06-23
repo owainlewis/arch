@@ -27,11 +27,9 @@ let main = double bar foo read
 TBD
 
 ```ocaml
->> A variable which returns an integer and pushes it onto the stack
-let x (int) = 10;
-
->> A function that expects two integers on the stack and produces a single integer
-let y (int, int -> int) = pop inc
+let gcd :: int int -> int [int] =
+  { }
+;
 ```
 
 ## Variables and functions
