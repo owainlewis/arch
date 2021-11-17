@@ -38,16 +38,33 @@ final class Outcome<L, R> {
     success = r;
   }
 
-  public static <L, R> Outcome<L, R> left(L value) {
+  public static <L, R> Outcome<L, R> failure(L value) {
     return new Outcome<>(Optional.of(value), Optional.empty());
   }
 
-  public static <L, R> Outcome<L, R> right(R value) {
+  public static <L, R> Outcome<L, R> success(R value) {
     return new Outcome<>(Optional.empty(), Optional.of(value));
   }
 
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
   public <T> T map(Function<? super L, ? extends T> lFunc, Function<? super R, ? extends T> rFunc) {
     return failure.<T>map(lFunc).orElseGet(() -> success.map(rFunc).get());
+  }
+
+  /**
+   * Returns true if a computation is successful
+   * @return boolean
+   */
+  public boolean isSuccess() {
+    return this.success.isPresent();
+  }
+
+  /**
+   * Returns true if a computation has failed
+   * @return boolean
+   */
+  public boolean isFailure() {
+    return this.failure.isPresent();
   }
 
   public <T> Outcome<T, R> mapLeft(Function<? super L, ? extends T> lFunc) {
